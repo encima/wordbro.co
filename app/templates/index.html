@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>{{ title }}</title>
+  </head>
+  <body>
+      <h1>Word, {{ bro }}</h1>
+
+      <input placeholder="Show me what you got, bro" id="submit-bro"></input>
+      <script>
+        window.onload = function() {
+          var inputBro = document.getElementById('submit-bro');
+          inputBro.onkeypress = function(e) {
+            if(e.keyCode === 13) {
+              var newBro = inputBro.value;
+              var postBro = new XMLHttpRequest();
+              var broParams = JSON.stringify({'bro':newBro});
+              postBro.open("POST", "/api/bro", true);
+              postBro.setRequestHeader("Content-type", "application/json");
+
+              postBro.onreadystatechange = function() {
+	               if(postBro.readyState == 4 && postBro.status == 201) {
+		                 alert(postBro.responseText);
+                 }else{
+                     alert(postBro.responseText);
+                 }
+              }
+              postBro.send(broParams);
+            }
+          }
+        }
+    </script>
+  </body>
+</html>
