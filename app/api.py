@@ -13,10 +13,12 @@ def get_bro():
 		if db.bros.find_one({}) is not None:
 			return jsonify({'bro':random.choice(list(db.bros.find()))['bro']})
 		else:
-			return {'bro': 'Bro'}
+			return jsonify({'bro': 'Bro'})
     elif request.method == 'POST':
         new_bro = request.json
-        if db.bros.find_one(new_bro) is None and 'bro' in new_bro['bro']:
+        print new_bro
+        match = db.bros.find_one(new_bro)
+        if match is None and 'bro' in new_bro['bro'].lower():
              db.bros.insert(new_bro)
         else:
             return jsonify({'msg': 'No dice, bro'}), 400

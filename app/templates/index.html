@@ -14,7 +14,7 @@
 			cursor: pointer;
 		}
 		#submit-bro {
-			margin-left: 40%;
+			//margin-left: 40%;
 		}
 	</style>
 </head>
@@ -37,7 +37,7 @@
 	<div class="container">
 		<p class="text-center" id="get-bro">Not the bro you were looking for?</p>
 		<div class="row">
-			    <div class="col-lg-4 col-lg-offset-6">
+			    <div class="col-xs-4 col-xs-offset-5">
 			    	<input class="text-center" placeholder="Wanna add, bro?" id="submit-bro"></input>
 				</div>
 		</div>
@@ -75,7 +75,9 @@
 					   wordBro.innerHTML = 'Word, ' + JSON.parse(postBro.responseText).bro;
 					   inputBro.value = '';
 					   inputBro.blur();
-                   }
+                   }else{
+			console.log(postBro.responseText);
+		   }
               }
               postBro.send(broParams);
             }
