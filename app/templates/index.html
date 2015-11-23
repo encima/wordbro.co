@@ -32,7 +32,8 @@
 			</nav>-->
 	</header>
 	<div class="jumbotron">
-		<h2  class="text-center" id="greet-bro">Word, {{ bro }}</h2>
+		<h2  class="text-center" id="greet-bro">Word, <span id="bro-text">{{ bro }}</span></h2>
+		<span class="col-xs-offset-6 glyphicon glyphicon-flag text-center" id="flag-bro"></span>
 	</div>
 	<div class="container">
 		<p class="text-center" id="get-bro">Not the bro you were looking for?</p>
@@ -46,21 +47,24 @@
 		<p class="text-center text-muted">Made for no reason by <a href="https://twitter.com/encima27i">encima</a>.</p>
 	</footer>
       <script>
-        window.onload = function() {
-			var inputBro = document.getElementById('submit-bro');
-			var wordBro = document.getElementById('greet-bro');
-			var getNewBro = document.getElementById('get-bro');
-			getNewBro.onclick = function(e) {
-              var getBro = new XMLHttpRequest();
-              getBro.open("GET", "/api/bro", true);
+		  window.onload = function() {
 
-			  getBro.onreadystatechange = function() {
-	               if(getBro.readyState == 4 && getBro.status == 200) {
-					   wordBro.innerHTML = 'Word, ' + JSON.parse(getBro.responseText).bro;
-                   }
-              }
-			  getBro.send();
-		  }
+			  function getMeABro() {
+				  var getBro = new XMLHttpRequest();
+				  getBro.open("GET", "/api/bro", true);
+
+				  getBro.onreadystatechange = function() {
+					   if(getBro.readyState == 4 && getBro.status == 200) {
+						   wordBro.innerHTML = JSON.parse(getBro.responseText).bro;
+					   }
+				  }
+				  getBro.send();
+			  }
+			var inputBro = document.getElementById('submit-bro');
+			var wordBro = document.getElementById('bro-text');
+			var flagBro = document.getElementById('flag-bro');
+			var getNewBro = document.getElementById('get-bro');
+			getNewBro.onclick = getMeABro;
           inputBro.onkeypress = function(e) {
             if(e.keyCode === 13) {
               var newBro = inputBro.value;
@@ -72,16 +76,28 @@
 			  postBro.onreadystatechange = function() {
 	               if(postBro.readyState == 4 && postBro.status == 201) {
 					   console.log(postBro.responseText);
-					   wordBro.innerHTML = 'Word, ' + JSON.parse(postBro.responseText).bro;
+					   wordBro.innerHTML = JSON.parse(postBro.responseText).bro;
 					   inputBro.value = '';
 					   inputBro.blur();
                    }else{
-			console.log(postBro.responseText);
-		   }
+					console.log(postBro.responseText);
+				   }
               }
               postBro.send(broParams);
             }
-          }
+		}
+			flagBro.onclick = function(e) {
+				var flagBroReq = new XMLHttpRequest();
+				flagBroReq.open("POST", "/api/bro/flag", true);
+				flagBroReq.setRequestHeader("Content-type", "application/json");
+				var broParams = JSON.stringify({'bro': wordBro.innerHTML.replace("Word, ", '')});
+				flagBroReq.onreadystatechange = function() {
+					console.log(flagBroReq.responseText);
+					getMeABro();
+				}
+				flagBroReq.send(broParams);
+
+			}
         }
     </script>
 </body>

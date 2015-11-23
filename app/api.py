@@ -23,3 +23,26 @@ def get_bro():
         else:
             return jsonify({'msg': 'No dice, bro'}), 400
         return jsonify({'msg': 'Nailed it, broski', 'bro': new_bro['bro']}), 201
+
+@app.route("/api/bro/flag", methods=['POST'])
+def flag_bro():
+	flag_bro = request.json 
+	match = db.bros.find_one(flag_bro)
+	msg = 'flagged it, broski'
+	new_flag = 1
+	if match is not None:
+		if 'flags' in match:
+			new_flag = match['flags'] + 1
+			if new_flag > 5:
+				print db.bros.delete_one(match).deleted_count
+				msg = 'deleted'
+			else:
+				db.bros.update_one(match, {'$set': {'flags': new_flag}}, upsert = False)
+				print match
+		else:
+			db.bros.update_one(match, {'$set': {'flags': new_flag}}, upsert = False)
+			print match
+	else:
+		msg = 'No record to flag'
+	return jsonify({'msg': msg, 'flags': new_flag})
+
