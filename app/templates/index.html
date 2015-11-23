@@ -1,14 +1,66 @@
-<html>
-  <head>
-    <title>{{ title }}</title>
-  </head>
-  <body>
-      <h1>Word, {{ bro }}</h1>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{{ title }}</title>
 
-      <input placeholder="Show me what you got, bro" id="submit-bro"></input>
+	<!-- CSS (load bootstrap from a CDN) -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link href='https://fonts.googleapis.com/css?family=Overlock:900italic' rel='stylesheet' type='text/css'>
+	<style>
+		body {
+			font-family: 'Overlock', cursive;
+		}
+		#get-bro {
+			cursor: pointer;
+		}
+		#submit-bro {
+			margin-left: 40%;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<!--<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">
+						<span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
+						{{ title }}
+					</a>
+				</div>
+			</div>
+			</nav>-->
+	</header>
+	<div class="jumbotron">
+		<h2  class="text-center" id="greet-bro">Word, {{ bro }}</h2>
+	</div>
+	<div class="container">
+		<p class="text-center" id="get-bro">Not the bro you were looking for?</p>
+		<div class="row">
+			    <div class="col-lg-4 col-lg-offset-6">
+			    	<input class="text-center" placeholder="Wanna add, bro?" id="submit-bro"></input>
+				</div>
+		</div>
+	</div>
+	<footer>
+		<p class="text-center text-muted">Made for no reason by <a href="https://twitter.com/encima27i">encima</a>.</p>
+	</footer>
       <script>
         window.onload = function() {
-          var inputBro = document.getElementById('submit-bro');
+			var inputBro = document.getElementById('submit-bro');
+			var wordBro = document.getElementById('greet-bro');
+			var getNewBro = document.getElementById('get-bro');
+			getNewBro.onclick = function(e) {
+              var getBro = new XMLHttpRequest();
+              getBro.open("GET", "/api/bro", true);
+
+			  getBro.onreadystatechange = function() {
+	               if(getBro.readyState == 4 && getBro.status == 200) {
+					   wordBro.innerHTML = 'Word, ' + JSON.parse(getBro.responseText).bro;
+                   }
+              }
+			  getBro.send();
+		  }
           inputBro.onkeypress = function(e) {
             if(e.keyCode === 13) {
               var newBro = inputBro.value;
@@ -17,17 +69,18 @@
               postBro.open("POST", "/api/bro", true);
               postBro.setRequestHeader("Content-type", "application/json");
 
-              postBro.onreadystatechange = function() {
+			  postBro.onreadystatechange = function() {
 	               if(postBro.readyState == 4 && postBro.status == 201) {
-		                 alert(postBro.responseText);
-                 }else{
-                     alert(postBro.responseText);
-                 }
+					   console.log(postBro.responseText);
+					   wordBro.innerHTML = 'Word, ' + JSON.parse(postBro.responseText).bro;
+					   inputBro.value = '';
+					   inputBro.blur();
+                   }
               }
               postBro.send(broParams);
             }
           }
         }
     </script>
-  </body>
+</body>
 </html>
